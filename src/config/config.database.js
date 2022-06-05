@@ -21,5 +21,8 @@ const mongoOptions = {
 /*
 * CONEXION A LA BASE DE DATOS
 * */
-
-mongoose.connect('mongodb://localhost:27017/myapp');
+mongoose
+  .connect(MONGO_URL, mongoOptions)
+  .then(() => console.log('Connected to Database!'))
+  .catch((err) => console.log(err));
+module.exports = mongoose;

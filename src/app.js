@@ -14,6 +14,7 @@ require('./config/config.database');
 
 
 app.use('/api', require('./routes'));
-app.use('/api/markers', require('./routes/marker.routes'));
+app.use('/api/marker', require('./routes/marker.routes'));
+app.use('/api/node', require('./routes/node.routes'));
 
 module.exports = app;

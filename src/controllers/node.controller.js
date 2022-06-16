@@ -43,7 +43,7 @@ module.exports.getNodes = [authorize(), getNodes];
 const getNodeById = async (req, res) => {
     const {nodeId} = req.params;
     try {
-        const doc = await Node.findOne({id: nodeId})
+        const doc = await Node.findOne({nodeId: nodeId})
         if (!doc) return res.status(404).json({message: 'Resource not found'});
         return res.status(200).json({message: doc});
     } catch (e) {

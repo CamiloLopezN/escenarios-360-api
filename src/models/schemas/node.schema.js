@@ -5,11 +5,15 @@ const links = new Schema({
     nodeId: {type: String, required: true}
 });
 
+const panoData = new Schema({
+    poseHeading: {type: String, required: true}
+});
+
 
 const nodeSchema = new Schema({
     nodeId: {type: String, required: true, unique: true},
     markers: [markerSchema],
-    panoData: {type: String, required: true},
+    panoData: [panoData],
     panorama: {type: String, required: true},
     position: {type: String, required: true},
     thumbnail: {type: String, required: true},

@@ -3,11 +3,10 @@ const {Node, Marker} = require('../models/entity.model');
 const {authorize} = require("../middlewares/oauth/authentication");
 
 const postNode = async (req, res) => {
-    const {nodeId, panoData, panorama, position, thumbnail} = req.body;
+    const {nodeId, panoData, panorama, position, thumbnail, name, links} = req.body;
     const node = new Node({
-        nodeId, panoData, panorama, position, thumbnail
+        nodeId, panoData, panorama, position, thumbnail, name, links
     });
-
     try {
         const foundNode = await Node.findOne({nodeId});
         if (!foundNode) {
@@ -44,7 +43,7 @@ module.exports.getNodes = [authorize(), getNodes];
 const getNodeById = async (req, res) => {
     const {nodeId} = req.params;
     try {
-        const doc = await Node.findOne({markerId: nodeId})
+        const doc = await Node.findOne({id: nodeId})
         if (!doc) return res.status(404).json({message: 'Resource not found'});
         return res.status(200).json({message: doc});
     } catch (e) {
@@ -59,7 +58,6 @@ const deleteNodeById = async (req, res) => {
     const {nodeId} = req.params;
     try {
         const doc = await Node.findOne({markerId: nodeId})
-
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError)
             return res.status(400).json({message: 'Incomplete or bad formatted client data'});
@@ -75,11 +73,9 @@ const markerAssociate = async (req, res) => {
         tooltip, content, data
     } = req.body;
     const queryFindMarker = {'markers.id': id, nodeId: nodeId};
-
     try {
         const markerAssociate = await Node.findOne(queryFindMarker);
         const foundMarker = await Marker.findOne({id});
-
         if (!markerAssociate && !foundMarker) {
             const marker = new Marker({
                 id, longitude, latitude, image, width,
@@ -99,5 +95,4 @@ const markerAssociate = async (req, res) => {
     }
     return res.status(200).json({message: 'Successful operation'});
 }
-
 module.exports.markerAssociate = [authorize(), markerAssociate];

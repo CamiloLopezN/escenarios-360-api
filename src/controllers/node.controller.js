@@ -59,7 +59,7 @@ const deleteNodeById = async (req, res) => {
     const {nodeId} = req.params;
     try {
         const doc = await Node.findOne({markerId: nodeId})
-        
+
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError)
             return res.status(400).json({message: 'Incomplete or bad formatted client data'});
@@ -94,7 +94,7 @@ const markerAssociate = async (req, res) => {
         if (e instanceof mongoose.Error.DocumentNotFoundError)
             return res.status(404).json({message: 'Not found resource'});
         if (e instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: 'Incomplete or bad formatted marked data', errors: err.errors});
+            return res.status(400).json({message: 'Incomplete or bad formatted marked data', errors: e.errors});
         return res.status(500).json({message: 'Internal server error'});
     }
     return res.status(200).json({message: 'Successful operation'});

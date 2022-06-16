@@ -9,9 +9,8 @@ const data = new Schema({
     generated: {type: Boolean, required: true}
 });
 
-
 const markerSchema = new Schema({
-        markerId: {type: String, required: true, unique: true},
+        id: {type: String, required: true, unique: true},
         longitude: {type: String, required: true},
         latitude: {type: String, required: true},
         image: {type: String, required: true},

@@ -71,18 +71,18 @@ module.exports.deleteNodeById = [authorize(), deleteNodeById];
 
 const markerAssociate = async (req, res) => {
     const {
-        nodeId, markerId, longitude, latitude, image, width, height, anchor,
+        nodeId, id, longitude, latitude, image, width, height, anchor,
         tooltip, content, data
     } = req.body;
-    const queryFindMarker = {'markers.markerId': markerId, nodeId: nodeId};
+    const queryFindMarker = {'markers.id': id, nodeId: nodeId};
 
     try {
         const markerAssociate = await Node.findOne(queryFindMarker);
-        const foundMarker = await Marker.findOne({markerId});
+        const foundMarker = await Marker.findOne({id});
 
         if (!markerAssociate && !foundMarker) {
             const marker = new Marker({
-                markerId, longitude, latitude, image, width,
+                id, longitude, latitude, image, width,
                 height, anchor, tooltip, content, data
             });
             await Node.updateOne({nodeId: nodeId}, {$push: {markers: marker}}).orFail();

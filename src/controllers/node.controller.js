@@ -55,6 +55,20 @@ const getNodeById = async (req, res) => {
 }
 module.exports.getNodeById = [authorize(), getNodeById];
 
+const deleteNodeById = async (req, res) => {
+    const {nodeId} = req.params;
+    try {
+        const doc = await Node.findOne({markerId: nodeId})
+        
+    } catch (e) {
+        if (e instanceof mongoose.Error.ValidationError)
+            return res.status(400).json({message: 'Incomplete or bad formatted client data'});
+        return res.status(500).json({message: 'Internal server error'});
+    }
+}
+module.exports.deleteNodeById = [authorize(), deleteNodeById];
+
+
 const markerAssociate = async (req, res) => {
     const {
         nodeId, markerId, longitude, latitude, image, width, height, anchor,

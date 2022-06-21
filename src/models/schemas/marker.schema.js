@@ -17,9 +17,9 @@ const markerSchema = new Schema({
         width: {type: String, required: true},
         height: {type: String, required: true},
         anchor: {type: String, required: true},
-        tooltip: [tooltip],
+        tooltip: tooltip,
         content: {type: String, required: true},
-        data: [data]
+        data: data
     }
 );
 

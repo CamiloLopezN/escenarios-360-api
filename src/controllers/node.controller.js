@@ -1,6 +1,7 @@
 const mongoose = require('../config/config.database');
 const {Node, Marker} = require('../models/entity.model');
 const {authorize} = require("../middlewares/oauth/authentication");
+const {log} = require("debug");
 
 const postNode = async (req, res) => {
     const {nodeId, panoData, panorama, position, thumbnail, name, links} = req.body;
@@ -74,24 +75,43 @@ const markerAssociate = async (req, res) => {
     } = req.body;
     const queryFindMarker = {'markers.id': id, nodeId: nodeId};
     try {
+        const marker = new Marker({
+            id, longitude, latitude, image, width,
+            height, anchor, tooltip, content, data
+        });
         const markerAssociate = await Node.findOne(queryFindMarker);
         const foundMarker = await Marker.findOne({id});
         if (!markerAssociate && !foundMarker) {
-            const marker = new Marker({
-                id, longitude, latitude, image, width,
-                height, anchor, tooltip, content, data
-            });
             await Node.updateOne({nodeId: nodeId}, {$push: {markers: marker}}).orFail();
             await marker.save();
         } else {
-            return res.status(304).json({message: 'La marca ya existe!'});
+            await Marker.updateOne({id: id}, ({
+                id, longitude, latitude, image, width,
+                height, anchor, tooltip, content, data
+            })).orFail();
+
+            Node.updateOne({'markers.id': id},
+                {
+                    $set:
+                        {
+                            'markers.$.longitude': longitude, 'markers.$.latitude': latitude,
+                            'markers.$.image': image, 'markers.$.width': width,
+                            'markers.$.height': height, 'markers.$.anchor': anchor,
+                            'markers.$.tooltip': tooltip, 'markers.$.content': content,
+                            'markers.$.data': data
+                        }
+                }
+            ).catch((err) => {
+                    console.log(err);
+                }
+            );
         }
     } catch (e) {
         if (e instanceof mongoose.Error.DocumentNotFoundError)
             return res.status(404).json({message: 'Not found resource'});
         if (e instanceof mongoose.Error.ValidationError)
             return res.status(400).json({message: 'Incomplete or bad formatted marked data', errors: e.errors});
-        return res.status(500).json({message: 'Internal server error'});
+        return res.status(500).json({message: 'Error interno del servidor: ' + e});
     }
     return res.status(200).json({message: 'Successful operation'});
 }

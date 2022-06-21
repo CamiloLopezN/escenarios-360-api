@@ -45,9 +45,10 @@ module.exports.getMarkers = [authorize(), getMarkers];
 
 
 const getMarkerById = async (req, res) => {
-    const {markerId} = req.params;
+    const {id} = req.params;
+    console.log(id)
     try {
-        const doc = await Marker.findOne({markerId: markerId})
+        const doc = await Marker.findOne({id: id})
         if (!doc) return res.status(404).json({message: 'Resource not found'});
         return res.status(200).json({message: doc});
     } catch (err) {

@@ -1,6 +1,7 @@
 const mongoose = require('../config/config.database');
 const {Node, Marker} = require('../models/entity.model');
 const {authorize} = require("../middlewares/oauth/authentication");
+const {STATUS_200, STATUS_400, STATUS_500, STATUS_404} = require("../utils/constants");
 
 const postNode = async (req, res) => {
     const {nodeId, panoData, panorama, position, thumbnail, name, links} = req.body;
@@ -14,11 +15,10 @@ const postNode = async (req, res) => {
         }
     } catch (err) {
         if (err instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: 'Incomplete or bad formatted marked data', errors: err.errors});
-        console.log(err)
-        return res.status(500).json({message: 'Internal server error'});
+            return res.status(400).json({message: STATUS_400, errors: err.errors});
+        return res.status(500).json({message: STATUS_500});
     }
-    return res.status(200).json({message: 'Successful operation'});
+    return res.status(200).json({message: STATUS_200});
 }
 module.exports.postNode = [authorize(), postNode];
 
@@ -29,11 +29,11 @@ const getNodes = async (req, res) => {
     let nodes;
     try {
         nodes = await Node.paginate({}, {projection, limit, page});
-        if (!nodes) return res.status(404).json({message: 'Recursos no encontrado.'});
+        if (!nodes) return res.status(404).json({message: STATUS_404});
     } catch (err) {
         if (err instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: 'Incomplete or bad formatted client data'});
-        return res.status(500).json({message: 'Internal server error'});
+            return res.status(400).json({message: STATUS_400});
+        return res.status(500).json({message: STATUS_500});
     }
     return res.status(200).json({message: nodes});
 
@@ -44,12 +44,12 @@ const getNodeById = async (req, res) => {
     const {nodeId} = req.params;
     try {
         const doc = await Node.findOne({nodeId: nodeId})
-        if (!doc) return res.status(404).json({message: 'Resource not found'});
+        if (!doc) return res.status(404).json({message: STATUS_404});
         return res.status(200).json({message: doc});
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: 'Incomplete or bad formatted client data'});
-        return res.status(500).json({message: 'Internal server error'});
+            return res.status(400).json({message: STATUS_400});
+        return res.status(500).json({message: STATUS_500});
     }
 }
 module.exports.getNodeById = [authorize(), getNodeById];
@@ -60,8 +60,8 @@ const deleteNodeById = async (req, res) => {
         const doc = await Node.findOne({markerId: nodeId})
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: 'Incomplete or bad formatted client data'});
-        return res.status(500).json({message: 'Internal server error'});
+            return res.status(400).json({message: STATUS_400});
+        return res.status(500).json({message: STATUS_500});
     }
 }
 module.exports.deleteNodeById = [authorize(), deleteNodeById];
@@ -106,12 +106,12 @@ const markerAssociate = async (req, res) => {
         }
     } catch (e) {
         if (e instanceof mongoose.Error.DocumentNotFoundError)
-            return res.status(404).json({message: 'Not found resource'});
+            return res.status(404).json({message: STATUS_404});
         if (e instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: 'Incomplete or bad formatted marked data', errors: e.errors});
-        return res.status(500).json({message: 'Error interno del servidor: ' + e});
+            return res.status(400).json({message: STATUS_400, errors: e.errors});
+        return res.status(500).json({message: STATUS_500 + e});
     }
-    return res.status(200).json({message: 'Successful operation'});
+    return res.status(200).json({message: STATUS_200});
 }
 module.exports.markerAssociate = [authorize(), markerAssociate];
 
@@ -125,17 +125,16 @@ const deleteMarkerById = async (req, res) => {
             safe: true,
             multi: true
         }, function (err, obj) {
-
         });
         await Marker.deleteOne({id: id});
+        return res.status(200).json({message: STATUS_200});
     } catch (e) {
         if (e instanceof mongoose.Error.DocumentNotFoundError)
-            return res.status(404).json({message: 'Not found resource'});
+            return res.status(404).json({message: STATUS_404});
         if (e instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: 'Incomplete or bad formatted marked data', errors: e.errors});
-        return res.status(500).json({message: 'Error interno del servidor: ' + e});
+            return res.status(400).json({message: STATUS_400, errors: e.errors});
+        return res.status(500).json({message: STATUS_500 + e});
     }
-    return res.status(200).json({message: 'Successful operation'});
 }
 module.exports.deleteMarkerById = [authorize(), deleteMarkerById];
 

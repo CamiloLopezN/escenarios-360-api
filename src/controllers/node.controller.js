@@ -100,16 +100,16 @@ const markerAssociate = async (req, res) => {
                         }
                 }
             ).catch((err) => {
-                    console.log(err);
+                    return res.status(500).json({message: STATUS_500 + err});
                 }
             );
         }
-    } catch (e) {
-        if (e instanceof mongoose.Error.DocumentNotFoundError)
+    } catch (err) {
+        if (err instanceof mongoose.Error.DocumentNotFoundError)
             return res.status(404).json({message: STATUS_404});
-        if (e instanceof mongoose.Error.ValidationError)
+        if (err instanceof mongoose.Error.ValidationError)
             return res.status(400).json({message: STATUS_400, errors: e.errors});
-        return res.status(500).json({message: STATUS_500 + e});
+        return res.status(500).json({message: STATUS_500 + err});
     }
     return res.status(200).json({message: STATUS_200});
 }
@@ -118,15 +118,13 @@ module.exports.markerAssociate = [authorize(), markerAssociate];
 
 const deleteMarkerById = async (req, res) => {
     const {nodeId, id} = req.params;
-
+    const queryFindMarker = {'markers.id': id, nodeId: nodeId};
     try {
-        const queryFindMarker = {'markers.id': id, nodeId: nodeId};
-        Node.updateOne(queryFindMarker, {"$pull": {"markers": {"id": id}}}, {
+        await Node.updateOne(queryFindMarker, {"$pull": {"markers": {"id": id}}}, {
             safe: true,
             multi: true
-        }, function (err, obj) {
-        });
-        await Marker.deleteOne({id: id});
+        }).orFail();
+        await Marker.deleteOne({id: id}).orFail();
         return res.status(200).json({message: STATUS_200});
     } catch (e) {
         if (e instanceof mongoose.Error.DocumentNotFoundError)

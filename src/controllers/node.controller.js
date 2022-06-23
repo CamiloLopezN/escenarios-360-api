@@ -1,7 +1,6 @@
 const mongoose = require('../config/config.database');
 const {Node, Marker} = require('../models/entity.model');
 const {authorize} = require("../middlewares/oauth/authentication");
-const {log} = require("debug");
 
 const postNode = async (req, res) => {
     const {nodeId, panoData, panorama, position, thumbnail, name, links} = req.body;
@@ -89,7 +88,6 @@ const markerAssociate = async (req, res) => {
                 id, longitude, latitude, image, width,
                 height, anchor, tooltip, content, data
             })).orFail();
-
             Node.updateOne({'markers.id': id},
                 {
                     $set:
@@ -116,3 +114,28 @@ const markerAssociate = async (req, res) => {
     return res.status(200).json({message: 'Successful operation'});
 }
 module.exports.markerAssociate = [authorize(), markerAssociate];
+
+
+const deleteMarkerById = async (req, res) => {
+    const {nodeId, id} = req.params;
+
+    try {
+        const queryFindMarker = {'markers.id': id, nodeId: nodeId};
+        Node.updateOne(queryFindMarker, {"$pull": {"markers": {"id": id}}}, {
+            safe: true,
+            multi: true
+        }, function (err, obj) {
+
+        });
+        await Marker.deleteOne({id: id});
+    } catch (e) {
+        if (e instanceof mongoose.Error.DocumentNotFoundError)
+            return res.status(404).json({message: 'Not found resource'});
+        if (e instanceof mongoose.Error.ValidationError)
+            return res.status(400).json({message: 'Incomplete or bad formatted marked data', errors: e.errors});
+        return res.status(500).json({message: 'Error interno del servidor: ' + e});
+    }
+    return res.status(200).json({message: 'Successful operation'});
+}
+module.exports.deleteMarkerById = [authorize(), deleteMarkerById];
+

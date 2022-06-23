@@ -32,7 +32,7 @@ const getNodes = async (req, res) => {
         if (!nodes) return res.status(404).json({message: STATUS_404});
     } catch (err) {
         if (err instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: STATUS_400});
+            return res.status(400).json({message: STATUS_400, errors: err.errors});
         return res.status(500).json({message: STATUS_500});
     }
     return res.status(200).json({message: nodes});
@@ -46,8 +46,8 @@ const getNodeById = async (req, res) => {
         const doc = await Node.findOne({nodeId: nodeId})
         if (!doc) return res.status(404).json({message: STATUS_404});
         return res.status(200).json({message: doc});
-    } catch (e) {
-        if (e instanceof mongoose.Error.ValidationError)
+    } catch (err) {
+        if (err instanceof mongoose.Error.ValidationError)
             return res.status(400).json({message: STATUS_400});
         return res.status(500).json({message: STATUS_500});
     }
@@ -58,8 +58,8 @@ const deleteNodeById = async (req, res) => {
     const {nodeId} = req.params;
     try {
         const doc = await Node.findOne({markerId: nodeId})
-    } catch (e) {
-        if (e instanceof mongoose.Error.ValidationError)
+    } catch (err) {
+        if (err instanceof mongoose.Error.ValidationError)
             return res.status(400).json({message: STATUS_400});
         return res.status(500).json({message: STATUS_500});
     }
@@ -108,7 +108,7 @@ const markerAssociate = async (req, res) => {
         if (err instanceof mongoose.Error.DocumentNotFoundError)
             return res.status(404).json({message: STATUS_404});
         if (err instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: STATUS_400, errors: e.errors});
+            return res.status(400).json({message: STATUS_400, errors: err.errors});
         return res.status(500).json({message: STATUS_500 + err});
     }
     return res.status(200).json({message: STATUS_200});
@@ -126,12 +126,12 @@ const deleteMarkerById = async (req, res) => {
         }).orFail();
         await Marker.deleteOne({id: id}).orFail();
         return res.status(200).json({message: STATUS_200});
-    } catch (e) {
-        if (e instanceof mongoose.Error.DocumentNotFoundError)
+    } catch (err) {
+        if (err instanceof mongoose.Error.DocumentNotFoundError)
             return res.status(404).json({message: STATUS_404});
-        if (e instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({message: STATUS_400, errors: e.errors});
-        return res.status(500).json({message: STATUS_500 + e});
+        if (err instanceof mongoose.Error.ValidationError)
+            return res.status(400).json({message: STATUS_400, errors: err.errors});
+        return res.status(500).json({message: STATUS_500 + err});
     }
 }
 module.exports.deleteMarkerById = [authorize(), deleteMarkerById];

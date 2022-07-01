@@ -7,8 +7,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www",
-    "build": "ng build --prod"
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "axios": "^0.27.2",

@@ -20,6 +20,6 @@ const mongoOptions = {
 * */
 mongoose
     .connect(MONGO_URL, mongoOptions)
-    .then(() => console.log('¡Conexión exitosa con ' + MONGO_DB + '!'))
+    .then(() => console.log('¡Conexión exitosa con ' + MONGO_DB +'!'))
     .catch((err) => console.log(err));
 module.exports = mongoose;

@@ -69,13 +69,13 @@ module.exports.deleteNodeById = [authorize(), deleteNodeById];
 
 const markerAssociate = async (req, res) => {
     const {
-        nodeId, id, longitude, latitude, image, width, height, anchor,
+        nodeId, id, userId, longitude, latitude, image, width, height, anchor,
         tooltip, content, data
     } = req.body;
     const queryFindMarker = {'markers.id': id, nodeId: nodeId};
     try {
         const marker = new Marker({
-            id, longitude, latitude, image, width,
+            id, userId, longitude, latitude, image, width,
             height, anchor, tooltip, content, data
         });
         const markerAssociate = await Node.findOne(queryFindMarker);
@@ -85,7 +85,7 @@ const markerAssociate = async (req, res) => {
             await marker.save();
         } else {
             await Marker.updateOne({id: id}, ({
-                id, longitude, latitude, image, width,
+                id, userId, longitude, latitude, image, width,
                 height, anchor, tooltip, content, data
             })).orFail();
             Node.updateOne({'markers.id': id},

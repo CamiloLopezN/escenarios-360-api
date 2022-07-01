@@ -4,9 +4,9 @@ const {authorize} = require("../middlewares/oauth/authentication");
 
 
 const postMarker = async (req, res) => {
-    const {markerId, longitude, latitude, image, width, height, anchor, tooltip, content, data} = req.body;
+    const {markerId, userId, longitude, latitude, image, width, height, anchor, tooltip, content, data} = req.body;
     const marker = new Marker({
-        markerId, longitude, latitude, image, width, height, anchor, tooltip, content, data
+        markerId, userId, longitude, latitude, image, width, height, anchor, tooltip, content, data
     });
     try {
         const foundMarker = await Marker.findOne({markerId});

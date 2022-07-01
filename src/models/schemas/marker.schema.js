@@ -11,7 +11,6 @@ const data = new Schema({
 
 const markerSchema = new Schema({
         id: {type: String, required: true, unique: true},
-        userId: {type: String, required: true, unique: true},
         longitude: {type: String, required: true},
         latitude: {type: String, required: true},
         image: {type: String, required: true},

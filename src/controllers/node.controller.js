@@ -105,7 +105,7 @@ const markerAssociate = async (req, res) => {
         }
     } catch (err) {
         if (err instanceof mongoose.Error.DocumentNotFoundError)
-            return res.status(404).json({message: STATUS_404 + ' los datos ingresados son: ' + req.body});
+            return res.status(404).json({message: STATUS_404 + ' los datos ingresados son: ' + 'ID: ' + id + ' NodeID' + nodeId});
         if (err instanceof mongoose.Error.ValidationError)
             return res.status(400).json({message: STATUS_400, errors: err.errors});
         return res.status(500).json({message: STATUS_500 + err});

@@ -1,0 +1,1 @@
+const model=require("../config/config.database")["model"],Scenery=model("Scenery",require("./schemas/scenery.schema")),Node=model("Node",require("./schemas/node.schema")),Marker=model("Marker",require("./schemas/marker.schema"));module.exports={Scenery:Scenery,Node:Node,Marker:Marker};

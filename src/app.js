@@ -1,20 +1,20 @@
 const express = require('express');
+const compression = require('compression');
+const helmet = require('helmet');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const app = express();
-
+app.use(compression());
+app.use(helmet());
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({extended: false, limit: '50mb '}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 require('./config/config.database');
-
-
 app.use('/api', require('./routes'));
 app.use('/api/marker', require('./routes/marker.routes'));
 app.use('/api/node', require('./routes/node.routes'));

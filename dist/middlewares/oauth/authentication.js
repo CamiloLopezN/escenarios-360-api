@@ -1,0 +1,1 @@
+require("dotenv").config();const axios=require("axios");module.exports.authorize=()=>async(e,r,a)=>{try{return await axios.get(process.env.API_AUTH,{headers:{Authorization:e.headers.authorization}}).then(async e=>!0===e.data.status?a():a("Usuario inválido"))}catch(e){return r.status(500).json({message:"Internal server error"})}};

@@ -1,0 +1,1 @@
+const express=require("express"),router=express.Router(),markerController=require("../controllers/marker.controller");router.get("/",markerController.getMarkers),router.get("/:id",markerController.getMarkerById),router.post("/",markerController.postMarker),module.exports=router;

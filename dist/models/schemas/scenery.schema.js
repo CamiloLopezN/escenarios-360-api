@@ -1,0 +1,1 @@
+const Schema=require("mongoose")["Schema"],nodeSchema=require("./node.schema"),scenerySchema=new Schema({sceneryId:{type:String,required:!0,unique:!0},nodes:[nodeSchema]});scenerySchema.plugin(require("mongoose-paginate-v2")),scenerySchema.plugin(require("mongoose-aggregate-paginate-v2")),module.exports=scenerySchema;

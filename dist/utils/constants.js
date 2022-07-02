@@ -1,0 +1,1 @@
+const STATUS_200="Operación completada satisfactoriamente.",STATUS_400="Información incompleta o mal formateada.",STATUS_404="Recursos no encontrados.",STATUS_500="Error interno del servidor. ";module.exports={STATUS_200:STATUS_200,STATUS_400:STATUS_400,STATUS_404:STATUS_404,STATUS_500:STATUS_500};

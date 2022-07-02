@@ -1,0 +1,1 @@
+const mongoose=require("../config/config.database"),Scenery=require("../models/entity.model")["Scenery"],authorize=require("../middlewares/oauth/authentication")["authorize"];

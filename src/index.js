@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-const app = require('../src/app');
+const app = require('./app');
 const debug = require('debug')('escenarios-360-api:server');
 const http = require('http');
 

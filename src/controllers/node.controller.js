@@ -87,7 +87,7 @@ const markerAssociate = async (req, res) => {
                 id, longitude, latitude, image, width,
                 height, anchor, tooltip, content, data
             })).orFail();
-            Node.updateOne({'markers.id': id},
+            await Node.updateOne({'markers.id': id},
                 {
                     $set:
                         {
@@ -107,7 +107,7 @@ const markerAssociate = async (req, res) => {
         if (err instanceof mongoose.Error.DocumentNotFoundError)
             return res.status(404).json({
                 message: STATUS_404 + ' los datos ingresados son: ' + 'ID: ' + id + ' NodeID: ' + nodeId +
-                    ' longitude: ' +longitude + ' latitude: ' + latitude + image + width + height + anchor +
+                    ' longitude: ' + longitude + ' latitude: ' + latitude + image + width + height + anchor +
                     tooltip + content + data
             });
         if (err instanceof mongoose.Error.ValidationError)
